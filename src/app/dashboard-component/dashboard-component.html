@@ -1,0 +1,150 @@
+<div class="dashboard">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>🚗 Car Booking</h2>
+
+    <ul>
+      <li>🏠 Dashboard</li>
+      <li>🚘 Book Car</li>
+      <li>📋 My Bookings</li>
+      <li>👤 Profile</li>
+    </ul>
+
+    <button (click)="logout()">Logout</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <h1>Welcome Back 👋</h1>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="cards">
+
+      <div class="card">
+        <h3>Total Cars</h3>
+        <p>{{ totalCars }}</p>
+      </div>
+
+      <div class="card">
+        <h3>Available Seats</h3>
+        <p>{{ availableSeats }} / {{ totalSeats }}</p>
+      </div>
+
+      <div class="card">
+        <h3>My Bookings</h3>
+        <p>{{ bookedSeats }}</p>
+      </div>
+
+    </div>
+
+    <!-- Booking Section -->
+    <div class="booking-section">
+
+      <h2>Book Your Seat</h2>
+
+      <div class="car">
+        <h3>🚘 Car 1 (6 Seats)</h3>
+        <button (click)="openBookingPopup()">Book Seat</button>
+      </div>
+
+      <div class="car">
+        <h3>🚘 Car 2 (6 Seats)</h3>
+        <button (click)="openBookingPopup()">Book Seat</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= Popup ================= -->
+
+<div class="popup-overlay" *ngIf="showPopup">
+
+  <div class="popup large-popup">
+
+    <!-- ===== Header ===== -->
+    <div class="popup-header">
+      <h2>🚗 Book Your Seat</h2>
+      <span class="price-tag">₹500 / seat</span>
+    </div>
+
+    <!-- ===== Body ===== -->
+    <div class="popup-body">
+
+      <!-- Route Section -->
+      <div class="popup-section">
+        <h3>📍 Select Route</h3>
+
+        <label>
+          <input type="radio" name="route" value="Hinjewadi to Loni" [(ngModel)]="selectedRoute">
+          Hinjewadi ➝ Loni
+        </label>
+
+        <label>
+          <input type="radio" name="route" value="Loni to Hinjewadi" [(ngModel)]="selectedRoute">
+          Loni ➝ Hinjewadi
+        </label>
+      </div>
+
+      <!-- Time Section -->
+      <div class="popup-section">
+        <h3>⏰ Select Time</h3>
+
+        <label>
+          <input type="radio" name="time" value="Morning" [(ngModel)]="selectedTime">
+          Morning 🌅
+        </label>
+
+        <label>
+          <input type="radio" name="time" value="Evening" [(ngModel)]="selectedTime">
+          Evening 🌇
+        </label>
+      </div>
+
+      <!-- Payment Section -->
+      <div class="popup-section">
+        <h3>💳 Payment</h3>
+
+        <img src="assets/qr-code.png" alt="QR Code" width="150">
+
+        <p class="payment-note">Scan the QR and then confirm booking</p>
+
+        <label class="payment-check">
+          <input type="checkbox" [(ngModel)]="paymentDone">
+          I have completed the payment
+        </label>
+      </div>
+
+      <!-- Seat Info -->
+      <div class="popup-section seat-info-box">
+        Available Seats: <strong>{{ availableSeats }}</strong>
+      </div>
+
+      <!-- Cancel Button -->
+      <button
+        class="cancel-seat-btn"
+        *ngIf="bookedSeats > 0"
+        (click)="cancelBooking()"
+      >
+        Cancel Last Booking ❌
+      </button>
+
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <div class="popup-footer">
+      <button class="confirm-btn" (click)="confirmBooking()">Confirm Booking</button>
+      <button class="close-btn" (click)="closePopup()">Close</button>
+    </div>
+
+  </div>
+
+</div>

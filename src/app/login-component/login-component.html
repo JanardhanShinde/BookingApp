@@ -1,0 +1,54 @@
+<div class="login-container">
+  <div class="login-box">
+
+    <h2>🚗 Car Booking Login</h2>
+
+    <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
+
+      <!-- Email -->
+      <div class="form-group">
+        <input type="email" name="email" placeholder="Enter Email" [(ngModel)]="email" #emailRef="ngModel" required
+          email />
+
+        <div class="error" *ngIf="emailRef.invalid && emailRef.touched">
+          <span *ngIf="emailRef.errors?.['required']">Email is required</span>
+          <span *ngIf="emailRef.errors?.['email']">Enter valid email</span>
+        </div>
+      </div>
+
+      <!-- Password with toggle -->
+      <div class="form-group password-box">
+        <input [type]="showPassword ? 'text' : 'password'" name="password" placeholder="Enter Password"
+          [(ngModel)]="password" #passwordRef="ngModel" required minlength="6" />
+
+        <span class="toggle-password" (click)="togglePassword()">
+          {{ showPassword ? '🙈' : '👁' }}
+        </span>
+
+        <div class="error" *ngIf="passwordRef.invalid && passwordRef.touched">
+          <span *ngIf="passwordRef.errors?.['required']">Password is required</span>
+          <span *ngIf="passwordRef.errors?.['minlength']">Minimum 6 characters</span>
+        </div>
+      </div>
+
+      <!-- Remember me + Forgot password -->
+      <div class="extra-options">
+        <label>
+          <input class="checkbox" type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
+          Remember Me
+        </label>
+
+        <a routerLink="/forgot-password">Forgot Password?</a>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" [disabled]="loginForm.invalid">
+        Login
+      </button>
+
+    </form>
+
+    <p class="footer-text">Welcome back! Please login to continue 🚘</p>
+
+  </div>
+</div>
