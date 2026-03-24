@@ -13,7 +13,12 @@ export class DashboardComponent {
 
   totalCars = 2;
   seatsPerCar = 6;
-
+  todayDate: string = '';
+  showSuccess: boolean = false;
+currentStep: number = 1;
+fromLocation: string = '';
+toLocation: string = '';
+selectedDate: string = '';
   totalSeats = this.totalCars * this.seatsPerCar;
   bookedSeats = 0;
 
@@ -32,6 +37,12 @@ export class DashboardComponent {
   ];
 
   selectedSeatNumber: number | null = null;
+
+  ngOnInit() {
+  const today = new Date();
+  this.todayDate = today.toISOString().split('T')[0]; // format: YYYY-MM-DD
+}
+
   constructor(private router: Router) { }
 
   get availableSeats() {
@@ -48,21 +59,22 @@ export class DashboardComponent {
     this.selectedSeatNumber = seat.number;
   }
 
-  openBookingPopup() {
-    this.showPopup = true;
-  }
-
-  closePopup() {
-    this.showPopup = false;
-    this.selectedTime = '';
-  }
+ openBookingPopup() {
+  this.resetBookingForm();   // ✅ clear old data
+  this.showPopup = true;
+}
 
   confirmBooking() {
 
-    if (!this.selectedRoute) {
-      alert("Please select destination 🚗");
-      return;
-    }
+   if (!this.fromLocation || !this.toLocation) {
+  alert("Please enter From and To locations 📍");
+  return;
+}
+
+if (!this.selectedDate) {
+  alert("Please select travel date 📅");
+  return;
+}
 
     if (!this.selectedTime) {
       alert("Please select time 🌅🌇");
@@ -74,13 +86,19 @@ export class DashboardComponent {
       return;
     }
 
-    if (this.availableSeats > 0) {
-      this.bookedSeats++;   // 👈 only update this
-      alert("Seat booked successfully 🎉");
-    } else {
-      alert("No seats available ❌");
-    }
+   if (this.availableSeats > 0) {
+  this.bookedSeats++;
+
+  this.showPopup = false;     // close booking popup
+  this.showSuccess = true;    // show success modal
+} else {
+  alert("No seats available ❌");
+}
+
   }
+  closeSuccess() {
+  this.showSuccess = false;
+}
   isSeatBooked(seatNumber: number) {
     return this.seats.find(s => s.number === seatNumber)?.booked;
   }
@@ -109,4 +127,36 @@ export class DashboardComponent {
       alert('No booking found to cancel');
     }
   }
+  goToStep2() {
+
+  if (!this.fromLocation || !this.toLocation) {
+    alert("Enter pickup & destination 📍");
+    return;
+  }
+
+  if (!this.selectedDate) {
+    alert("Select date 📅");
+    return;
+  }
+
+  if (!this.selectedTime) {
+    alert("Select time ⏰");
+    return;
+  }
+
+  this.currentStep = 2;
+}
+closePopup() {
+  this.showPopup = false;
+  this.currentStep = 1;
+  this.resetBookingForm();
+}
+resetBookingForm() {
+  this.fromLocation = '';
+  this.toLocation = '';
+  this.selectedDate = '';
+  this.selectedTime = '';
+  this.paymentDone = false;
+  this.currentStep = 1;
+}
 }

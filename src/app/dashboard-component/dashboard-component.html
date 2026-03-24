@@ -66,84 +66,110 @@
 
 <!-- ================= Popup ================= -->
 
+<!-- ================= Popup ================= -->
+
 <div class="popup-overlay" *ngIf="showPopup">
 
-  <div class="popup large-popup">
+  <div class="popup uber-popup">
 
-    <!-- ===== Header ===== -->
+    <!-- Header -->
     <div class="popup-header">
-      <h2>🚗 Book Your Seat</h2>
+      <h2>🚗 Book Your Ride</h2>
       <span class="price-tag">₹500 / seat</span>
     </div>
 
-    <!-- ===== Body ===== -->
-    <div class="popup-body">
+    <!-- ===== STEP 1 ===== -->
+    <div *ngIf="currentStep === 1" class="popup-body">
 
-      <!-- Route Section -->
-      <div class="popup-section">
-        <h3>📍 Select Route</h3>
-
-        <label>
-          <input type="radio" name="route" value="Hinjewadi to Loni" [(ngModel)]="selectedRoute">
-          Hinjewadi ➝ Loni
-        </label>
-
-        <label>
-          <input type="radio" name="route" value="Loni to Hinjewadi" [(ngModel)]="selectedRoute">
-          Loni ➝ Hinjewadi
-        </label>
+      <div class="input-group">
+        <span>📍</span>
+        <input type="text" placeholder="Enter pickup location"
+          [(ngModel)]="fromLocation">
       </div>
 
-      <!-- Time Section -->
-      <div class="popup-section">
-        <h3>⏰ Select Time</h3>
-
-        <label>
-          <input type="radio" name="time" value="Morning" [(ngModel)]="selectedTime">
-          Morning 🌅
-        </label>
-
-        <label>
-          <input type="radio" name="time" value="Evening" [(ngModel)]="selectedTime">
-          Evening 🌇
-        </label>
+      <div class="input-group">
+        <span>📍</span>
+        <input type="text" placeholder="Enter destination"
+          [(ngModel)]="toLocation">
       </div>
 
-      <!-- Payment Section -->
-      <div class="popup-section">
-        <h3>💳 Payment</h3>
+      <div class="input-group">
+        <span>📅</span>
+      <input type="date" [(ngModel)]="selectedDate" [min]="todayDate" class="input-box" />
+      </div>
 
-        <img src="assets/qr-code.png" alt="QR Code" width="150">
+      <div class="input-group">
+        <span>⏰</span>
+        <select [(ngModel)]="selectedTime">
+          <option value="">Select time</option>
+          <option value="Morning">Morning 🌅</option>
+          <option value="Evening">Evening 🌇</option>
+        </select>
+      </div>
 
-        <p class="payment-note">Scan the QR and then confirm booking</p>
+    </div>
 
-        <label class="payment-check">
+    <!-- ===== STEP 2 ===== -->
+    <div *ngIf="currentStep === 2" class="popup-body">
+
+      <div class="payment-card">
+        <h3>💳 Complete Payment</h3>
+
+        <img src="assets/qr-code.png" width="140">
+
+        <p>Scan & pay to confirm booking</p>
+
+        <label>
           <input type="checkbox" [(ngModel)]="paymentDone">
-          I have completed the payment
+          Payment completed
         </label>
       </div>
 
-      <!-- Seat Info -->
-      <div class="popup-section seat-info-box">
+      <div class="seat-info">
         Available Seats: <strong>{{ availableSeats }}</strong>
       </div>
 
-      <!-- Cancel Button -->
-      <button
-        class="cancel-seat-btn"
-        *ngIf="bookedSeats > 0"
-        (click)="cancelBooking()"
-      >
-        Cancel Last Booking ❌
+    </div>
+
+    <!-- Footer Buttons -->
+    <div class="popup-footer">
+
+      <button *ngIf="currentStep === 2"
+        class="back-btn"
+        (click)="currentStep = 1">
+        ← Back
       </button>
 
+      <button *ngIf="currentStep === 1"
+        class="next-btn"
+        (click)="goToStep2()">
+        Next →
+      </button>
+
+      <button *ngIf="currentStep === 2"
+        class="confirm-btn"
+        (click)="confirmBooking()">
+        Confirm Booking
+      </button>
+
+      <button class="close-btn" (click)="closePopup()">Cancel</button>
+
     </div>
 
-    <!-- ===== Footer ===== -->
-    <div class="popup-footer">
-      <button class="confirm-btn" (click)="confirmBooking()">Confirm Booking</button>
-      <button class="close-btn" (click)="closePopup()">Close</button>
-    </div>
+  </div>
+
+</div>
+<!-- Success Modal -->
+<div class="success-overlay" *ngIf="showSuccess">
+
+  <div class="success-box">
+
+    <div class="success-icon">✅</div>
+
+    <h2>Booking Confirmed!</h2>
+    <p>Your seat has been booked successfully 🚗</p>
+
+    <button (click)="closeSuccess()">Done</button>
 
   </div>
 

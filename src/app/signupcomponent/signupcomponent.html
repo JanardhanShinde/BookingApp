@@ -1,0 +1,109 @@
+<div class="login-container">
+  <div class="login-box">
+
+```
+<h2>🚗 Create Account</h2>
+
+<form #signupForm="ngForm" (ngSubmit)="sendOtp(signupForm)">
+
+  <!-- Name -->
+  <div class="form-group">
+    <input type="text" name="name" placeholder="Enter Name"
+      [(ngModel)]="name" required #nameRef="ngModel" />
+
+    <div class="error" *ngIf="nameRef.invalid && nameRef.touched">
+      Name is required
+    </div>
+  </div>
+
+  <!-- Mobile -->
+  <div class="form-group">
+    <input type="text" name="mobile" placeholder="Enter Mobile"
+      [(ngModel)]="mobile" required pattern="^[0-9]{10}$"
+      #mobileRef="ngModel" />
+
+    <div class="error" *ngIf="mobileRef.invalid && mobileRef.touched">
+      Enter valid 10 digit mobile
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div class="form-group">
+    <input type="email" name="email" placeholder="Enter Email"
+      [(ngModel)]="email" required email #emailRef="ngModel" />
+
+    <div class="error" *ngIf="emailRef.invalid && emailRef.touched">
+      Enter valid email
+    </div>
+  </div>
+
+  <!-- Password -->
+  <div class="form-group">
+    <input type="password" name="password"
+      placeholder="Enter Password"
+      [(ngModel)]="password"
+      required minlength="6"
+      #passwordRef="ngModel" />
+
+    <div class="error" *ngIf="passwordRef.invalid && passwordRef.touched">
+      Minimum 6 characters
+    </div>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="form-group">
+    <input type="password" name="confirmPassword"
+      placeholder="Confirm Password"
+      [(ngModel)]="confirmPassword"
+      required />
+  </div>
+
+  <!-- Send OTP Button -->
+  <button type="submit" [disabled]="signupForm.invalid || loading">
+    {{ loading ? 'Sending OTP...' : 'Send OTP' }}
+  </button>
+
+  <!-- reCAPTCHA -->
+  <div id="recaptcha-container"></div>
+
+</form>
+
+<!-- OTP Popup -->
+<div class="popup" *ngIf="otpSent">
+  <div class="popup-content">
+
+    <h3>🔐 Enter OTP</h3>
+
+    <input type="text" placeholder="Enter OTP"
+      [(ngModel)]="enteredOtp" />
+
+    <button (click)="verifyOtp()" type="button">
+      Verify OTP
+    </button>
+
+    <button (click)="sendOtp(signupForm)"
+      [disabled]="resendDisabled" type="button">
+      Resend OTP {{ resendDisabled ? '(' + timer + 's)' : '' }}
+    </button>
+
+  </div>
+</div>
+
+<!-- Login Redirect -->
+<p (click)="goToLogin()" style="cursor:pointer">
+  Already have an account? Login
+</p>
+```
+
+  </div>
+</div>
+
+<!-- Success Popup -->
+
+<div class="popup" *ngIf="showPopup">
+  <div class="popup-content">
+    <h3>🎉 Account Created Successfully!</h3>
+    <p>You can now login</p>
+    <button (click)="goToLogin()">Go to Login</button>
+  </div>
+</div>

@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-component',
-imports: [FormsModule],
+  imports: [FormsModule],
   templateUrl: './login-component.html',
   styleUrl: './login-component.scss',
 })
@@ -33,4 +34,7 @@ export class LoginComponent {
 
     this.router.navigate(['/dashboard']);
   }
+  goToSignup() {
+  this.router.navigate(['/signup']);
+}
 }
