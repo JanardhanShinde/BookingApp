@@ -5,10 +5,10 @@
     <h2>🚗 Car Booking</h2>
 
     <ul>
-      <li>🏠 Dashboard</li>
-      <li>🚘 Book Car</li>
-      <li>📋 My Bookings</li>
-      <li>👤 Profile</li>
+      <li (click)="setTab('dashboard')">🏠 Dashboard</li>
+      <li (click)="setTab('book')">🚘 Book Car</li>
+      <li (click)="setTab('bookings')">📋 My Bookings</li>
+      <li (click)="setTab('profile')">👤 Profile</li>
     </ul>
 
     <button (click)="logout()">Logout</button>
@@ -22,39 +22,147 @@
       <h1>Welcome Back 👋</h1>
     </div>
 
-    <!-- Cards Section -->
-    <div class="cards">
+    <!-- DASHBOARD VIEW -->
+    <div *ngIf="activeTab === 'dashboard'">
 
-      <div class="card">
-        <h3>Total Cars</h3>
-        <p>{{ totalCars }}</p>
+      <!-- Topbar
+    <div class="topbar">
+      <h1>Welcome Back 👋</h1>
+    </div> -->
+
+      <!-- Cards Section -->
+      <div class="cards">
+        <div class="card">
+          <h3>Total Cars</h3>
+          <p>{{ totalCars }}</p>
+        </div>
+
+        <div class="card">
+          <h3>Available Seats</h3>
+          <p>{{ availableSeats }} / {{ totalSeats }}</p>
+        </div>
+
+        <div class="card">
+          <h3>My Bookings</h3>
+          <p>{{ bookedSeats }}</p>
+        </div>
       </div>
+      <div class="charts">
 
-      <div class="card">
-        <h3>Available Seats</h3>
-        <p>{{ availableSeats }} / {{ totalSeats }}</p>
+        <div class="chart-card">
+          <h3>💳 Payment Status</h3>
+          <canvas id="paymentChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+          <h3>💰 Revenue</h3>
+          <canvas id="revenueChart"></canvas>
+        </div>
+
       </div>
-
-      <div class="card">
-        <h3>My Bookings</h3>
-        <p>{{ bookedSeats }}</p>
-      </div>
-
     </div>
 
-    <!-- Booking Section -->
-    <div class="booking-section">
+    <!-- BOOK CAR -->
+    <div *ngIf="activeTab === 'book'" class="booking-section">
 
       <h2>Book Your Seat</h2>
 
       <div class="car">
         <h3>🚘 Car 1 (6 Seats)</h3>
-        <button (click)="openBookingPopup()">Book Seat</button>
+        <button class="car-btn" (click)="openBookingPopup()">Book Seat</button>
       </div>
 
       <div class="car">
         <h3>🚘 Car 2 (6 Seats)</h3>
-        <button (click)="openBookingPopup()">Book Seat</button>
+        <button class="car-btn" (click)="openBookingPopup()">Book Seat</button>
+      </div>
+
+    </div>
+    <!-- MY BOOKINGS -->
+    <!-- MY BOOKINGS -->
+    <div *ngIf="activeTab === 'bookings'" class="booking-history">
+
+      <h2>📋 My Bookings</h2>
+
+      <!-- Top Controls -->
+      <div class="table-controls">
+        <input type="text" placeholder="🔍 Search bookings..." [(ngModel)]="searchText">
+
+        <select [(ngModel)]="filterPayment">
+          <option value="">All Payments</option>
+          <option value="Paid">Paid</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container">
+        <table class="booking-table">
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>👤 Name</th>
+              <th>📱 Mobile</th>
+              <th>📍 Route</th>
+              <th>📅 Date</th>
+              <th>⏰ Time</th>
+              <th>💳 Payment</th>
+              <th>💰 Price</th>
+              <th>⚙️ Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let booking of paginatedBookings | filter:searchText; let i = index">
+
+              <td>{{ i + 1 }}</td>
+              <td>{{ booking.name }}</td>
+              <td>{{ booking.mobile }}</td>
+              <td>{{ booking.from }} → {{ booking.to }}</td>
+              <td>{{ booking.date }}</td>
+              <td>{{ booking.time }}</td>
+
+              <td>
+                <span class="status-badge" [ngClass]="booking.payment === 'Paid' ? 'paid' : 'pending'">
+                  {{ booking.payment }}
+                </span>
+              </td>
+
+              <td>₹{{ booking.price }}</td>
+
+              <td class="action-cell">
+                <button class="icon-btn cancel" (click)="cancelBookingByIndex(i)">❌</button>
+
+                <button class="icon-btn download" (click)="downloadInvoice(booking)">📄</button>
+              </td>
+
+            </tr>
+          </tbody>
+
+        </table>
+        <div class="pagination">
+          <button (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
+            ◀ Prev
+          </button>
+
+          <span>Page {{ currentPage }} / {{ totalPages }}</span>
+
+          <button (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">
+            Next ▶
+          </button>
+        </div>
+      </div>
+
+    </div>
+    <!-- PROFILE -->
+    <div *ngIf="activeTab === 'profile'" class="profile-section">
+
+      <h2>👤 My Profile</h2>
+
+      <div class="profile-card">
+        <p><strong>Name:</strong> {{ user?.name }}</p>
+        <p><strong>Email:</strong> {{ user?.email }}</p>
       </div>
 
     </div>
@@ -62,9 +170,6 @@
   </div>
 
 </div>
-
-
-<!-- ================= Popup ================= -->
 
 <!-- ================= Popup ================= -->
 
@@ -83,19 +188,21 @@
 
       <div class="input-group">
         <span>📍</span>
-        <input type="text" placeholder="Enter pickup location"
-          [(ngModel)]="fromLocation">
+        <input type="text" placeholder="Enter pickup location" [(ngModel)]="fromLocation">
       </div>
 
       <div class="input-group">
         <span>📍</span>
-        <input type="text" placeholder="Enter destination"
-          [(ngModel)]="toLocation">
+        <input type="text" placeholder="Enter destination" [(ngModel)]="toLocation">
+      </div>
+      <div class="input-group">
+        <span>📱</span>
+        <input type="text" placeholder="Enter mobile number" [(ngModel)]="mobileNumber">
       </div>
 
       <div class="input-group">
         <span>📅</span>
-      <input type="date" [(ngModel)]="selectedDate" [min]="todayDate" class="input-box" />
+        <input type="date" [(ngModel)]="selectedDate" [min]="todayDate" class="input-box" />
       </div>
 
       <div class="input-group">
@@ -134,21 +241,15 @@
     <!-- Footer Buttons -->
     <div class="popup-footer">
 
-      <button *ngIf="currentStep === 2"
-        class="back-btn"
-        (click)="currentStep = 1">
+      <button *ngIf="currentStep === 2" class="back-btn" (click)="currentStep = 1">
         ← Back
       </button>
 
-      <button *ngIf="currentStep === 1"
-        class="next-btn"
-        (click)="goToStep2()">
+      <button *ngIf="currentStep === 1" class="next-btn" (click)="goToStep2()">
         Next →
       </button>
 
-      <button *ngIf="currentStep === 2"
-        class="confirm-btn"
-        (click)="confirmBooking()">
+      <button *ngIf="currentStep === 2" class="confirm-btn" (click)="confirmBooking()">
         Confirm Booking
       </button>
 

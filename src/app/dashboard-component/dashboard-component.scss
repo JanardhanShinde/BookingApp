@@ -229,18 +229,20 @@
     transform: translateY(40px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
   }
 }
+
 .success-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -286,8 +288,274 @@
     transform: scale(0.7);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+.car-btn {
+  position: relative;
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  overflow: hidden;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.car-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Car animation */
+.car-btn::before {
+  content: "🚗";
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.5s ease;
+}
+
+.car-btn:hover::before {
+  left: 100%;
+}
+
+/* Car Animation Button */
+.car-btn {
+  position: relative;
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  overflow: hidden;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.car-btn:hover {
+  transform: scale(1.05);
+}
+
+.car-btn::before {
+  content: "🚗";
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.5s ease;
+}
+
+.car-btn:hover::before {
+  left: 100%;
+}
+
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.booking-table th {
+  background: #141e30;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.booking-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.booking-table tr:hover {
+  background: #f5f5f5;
+}
+
+/* Payment Status */
+.paid {
+  color: green;
+  font-weight: bold;
+}
+
+.pending {
+  color: red;
+  font-weight: bold;
+}
+
+.cancel-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.cancel-btn,
+.invoice-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap; // prevents text breaking
+}
+
+.invoice-btn {
+  background: #007bff;
+  color: white;
+}
+
+.booking-table {
+  min-width: 900px !important; // 🔥 important
+}
+
+.invoice-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+/* Controls */
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.table-controls input,
+.table-controls select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Table Container */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Table */
+.booking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.booking-table thead {
+  background: #141e30;
+  color: white;
+}
+
+.booking-table th,
+.booking-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.booking-table tbody tr {
+  transition: 0.2s;
+}
+
+.booking-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* Status Badge */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-badge.paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.pending {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Actions */
+.action-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.icon-btn.cancel {
+  background: #dbdada;
+  color: white;
+}
+
+.icon-btn.download {
+  background: #165cb9;
+  color: white;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: none;
+  background: #141e30;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.charts {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.chart-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  flex: 1;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
 }
