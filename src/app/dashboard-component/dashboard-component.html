@@ -17,11 +17,35 @@
   <!-- Main Content -->
   <div class="main-content">
 
-    <!-- Topbar -->
-    <div class="topbar">
-      <h1>Welcome Back 👋</h1>
-    </div>
+    <div class="topbar modern-topbar">
 
+      <!-- LEFT -->
+      <div class="welcome-text">
+        <h1>
+          {{ greeting }},
+          <span class="username">{{ userName || 'User' }}</span> 👋
+        </h1>
+
+        <p class="sub-text">
+          📍 Pune, Maharashtra • {{ currentTime }}
+        </p>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="topbar-right">
+        <div class="weather-box">
+          <img *ngIf="weatherIcon" [src]="'https://openweathermap.org/img/wn/' + weatherIcon + '@2x.png'" width="35">
+          {{ temperature }}°C
+        </div>
+
+        <!-- Car Animation -->
+        <div class="car-animation">
+          <div class="road"></div>
+          <div class="car">🚗</div>
+        </div>
+      </div>
+
+    </div>
     <!-- DASHBOARD VIEW -->
     <div *ngIf="activeTab === 'dashboard'">
 
@@ -63,21 +87,10 @@
     </div>
 
     <!-- BOOK CAR -->
-    <div *ngIf="activeTab === 'book'" class="booking-section">
-
-      <h2>Book Your Seat</h2>
-
-      <div class="car">
-        <h3>🚘 Car 1 (6 Seats)</h3>
-        <button class="car-btn" (click)="openBookingPopup()">Book Seat</button>
-      </div>
-
-      <div class="car">
-        <h3>🚘 Car 2 (6 Seats)</h3>
-        <button class="car-btn" (click)="openBookingPopup()">Book Seat</button>
-      </div>
-
-    </div>
+<app-book-car-component 
+  *ngIf="activeTab === 'book'"
+  (bookingDone)="handleBooking($event)">
+</app-book-car-component>
     <!-- MY BOOKINGS -->
     <!-- MY BOOKINGS -->
     <div *ngIf="activeTab === 'bookings'" class="booking-history">
@@ -155,122 +168,7 @@
       </div>
 
     </div>
-    <!-- PROFILE -->
-    <div *ngIf="activeTab === 'profile'" class="profile-section">
-
-      <h2>👤 My Profile</h2>
-
-      <div class="profile-card">
-        <p><strong>Name:</strong> {{ user?.name }}</p>
-        <p><strong>Email:</strong> {{ user?.email }}</p>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- ================= Popup ================= -->
-
-<div class="popup-overlay" *ngIf="showPopup">
-
-  <div class="popup uber-popup">
-
-    <!-- Header -->
-    <div class="popup-header">
-      <h2>🚗 Book Your Ride</h2>
-      <span class="price-tag">₹500 / seat</span>
-    </div>
-
-    <!-- ===== STEP 1 ===== -->
-    <div *ngIf="currentStep === 1" class="popup-body">
-
-      <div class="input-group">
-        <span>📍</span>
-        <input type="text" placeholder="Enter pickup location" [(ngModel)]="fromLocation">
-      </div>
-
-      <div class="input-group">
-        <span>📍</span>
-        <input type="text" placeholder="Enter destination" [(ngModel)]="toLocation">
-      </div>
-      <div class="input-group">
-        <span>📱</span>
-        <input type="text" placeholder="Enter mobile number" [(ngModel)]="mobileNumber">
-      </div>
-
-      <div class="input-group">
-        <span>📅</span>
-        <input type="date" [(ngModel)]="selectedDate" [min]="todayDate" class="input-box" />
-      </div>
-
-      <div class="input-group">
-        <span>⏰</span>
-        <select [(ngModel)]="selectedTime">
-          <option value="">Select time</option>
-          <option value="Morning">Morning 🌅</option>
-          <option value="Evening">Evening 🌇</option>
-        </select>
-      </div>
-
-    </div>
-
-    <!-- ===== STEP 2 ===== -->
-    <div *ngIf="currentStep === 2" class="popup-body">
-
-      <div class="payment-card">
-        <h3>💳 Complete Payment</h3>
-
-        <img src="assets/qr-code.png" width="140">
-
-        <p>Scan & pay to confirm booking</p>
-
-        <label>
-          <input type="checkbox" [(ngModel)]="paymentDone">
-          Payment completed
-        </label>
-      </div>
-
-      <div class="seat-info">
-        Available Seats: <strong>{{ availableSeats }}</strong>
-      </div>
-
-    </div>
-
-    <!-- Footer Buttons -->
-    <div class="popup-footer">
-
-      <button *ngIf="currentStep === 2" class="back-btn" (click)="currentStep = 1">
-        ← Back
-      </button>
-
-      <button *ngIf="currentStep === 1" class="next-btn" (click)="goToStep2()">
-        Next →
-      </button>
-
-      <button *ngIf="currentStep === 2" class="confirm-btn" (click)="confirmBooking()">
-        Confirm Booking
-      </button>
-
-      <button class="close-btn" (click)="closePopup()">Cancel</button>
-
-    </div>
-
-  </div>
-
-</div>
-<!-- Success Modal -->
-<div class="success-overlay" *ngIf="showSuccess">
-
-  <div class="success-box">
-
-    <div class="success-icon">✅</div>
-
-    <h2>Booking Confirmed!</h2>
-    <p>Your seat has been booked successfully 🚗</p>
-
-    <button (click)="closeSuccess()">Done</button>
+    <app-profile-component *ngIf="activeTab === 'profile'"></app-profile-component>
 
   </div>
 

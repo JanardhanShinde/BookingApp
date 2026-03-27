@@ -1,0 +1,71 @@
+<div class="booking-section">
+
+  <h2>Book Your Seat</h2>
+
+  <div class="car">
+    <h3>🚘 Car 1 (6 Seats)</h3>
+    <button class="car-btn" (click)="openBookingPopup()">Book Seat</button>
+  </div>
+
+  <div class="car">
+    <h3>🚘 Car 2 (6 Seats)</h3>
+    <button class="car-btn" (click)="openBookingPopup()">Book Seat</button>
+  </div>
+
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" *ngIf="showPopup">
+
+  <div class="popup uber-popup">
+
+    <div class="popup-header">
+      <h2>🚗 Book Your Ride</h2>
+      <span class="price-tag">₹500 / seat</span>
+    </div>
+
+    <!-- STEP 1 -->
+    <div *ngIf="currentStep === 1" class="popup-body">
+
+      <input type="text" placeholder="From" [(ngModel)]="fromLocation">
+      <input type="text" placeholder="To" [(ngModel)]="toLocation">
+      <input type="text" placeholder="Mobile" [(ngModel)]="mobileNumber">
+
+      <input type="date" [(ngModel)]="selectedDate" [min]="todayDate">
+
+      <select [(ngModel)]="selectedTime">
+        <option value="">Select time</option>
+        <option value="Morning">Morning</option>
+        <option value="Evening">Evening</option>
+      </select>
+
+    </div>
+
+    <!-- STEP 2 -->
+    <div *ngIf="currentStep === 2">
+
+      <h3>💳 Payment</h3>
+
+      <label>
+        <input type="checkbox" [(ngModel)]="paymentDone">
+        Payment completed
+      </label>
+
+    </div>
+
+    <!-- Buttons -->
+    <div class="popup-footer">
+
+      <button *ngIf="currentStep === 2" (click)="currentStep = 1">Back</button>
+
+      <button *ngIf="currentStep === 1" (click)="goToStep2()">Next</button>
+
+      <button *ngIf="currentStep === 2" (click)="confirmBooking()">Confirm</button>
+
+      <button (click)="closePopup()">Cancel</button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,21 @@
+<div class="toast" *ngIf="show">
+  <div class="toast-content" [ngClass]="type">
+
+    <span class="icon">
+      {{ type === 'success' ? '✅' : 
+         type === 'error' ? '❌' : 
+         type === 'warning' ? '⚠️' : 'ℹ️' }}
+    </span>
+
+    <span class="message">
+      {{ message }}
+    </span>
+
+  </div>
+
+  <!-- 🚗 Progress Bar -->
+  <div class="progress-container">
+    <div class="road"></div>
+   <div class="car" [style.animation-duration.ms]="progressDuration">🚗</div>
+  </div>
+</div>

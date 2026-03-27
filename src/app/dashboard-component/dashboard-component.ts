@@ -5,11 +5,15 @@ import { Router } from '@angular/router';
 import jsPDF from 'jspdf';
 import { FilterPipe } from '../filter-pipe';
 import { Chart } from 'chart.js/auto';
+import { ProfileComponent } from '../profile-component/profile-component';
+import { Toast } from '../../services/toast';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { BookCarComponent } from '../book-car-component/book-car-component';
 
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [FormsModule, CommonModule, FilterPipe],
+  imports: [FormsModule, CommonModule, FilterPipe, ProfileComponent, HttpClientModule, BookCarComponent],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss',
 })
@@ -22,56 +26,60 @@ export class DashboardComponent {
   searchText: string = '';
   mobileNumber: string = '';
   activeTab: string = 'dashboard';
-  user: any;
   bookingHistory: any[] = [];
+  paymentChart: any;
+revenueChart: any;
   seatsPerCar = 6;
   todayDate: string = '';
   showSuccess: boolean = false;
   currentStep: number = 1;
+
   fromLocation: string = '';
   toLocation: string = '';
   selectedDate: string = '';
+  selectedTime: string = '';
+
   totalSeats = this.totalCars * this.seatsPerCar;
   bookedSeats = 0;
 
+  greeting = '';
+  currentTime = '';
+  userName = localStorage.getItem('userName');
+
+  temperature: any = '';
+  weatherIcon: string = '';
+  city = 'Washim';
+
   showPopup = false;
-  selectedRoute: string = '';
-  selectedTime: string = '';
   paymentDone: boolean = false;
   seatPrice = 500;
-  seats = [
-    { number: 1, booked: false, selected: false },
-    { number: 2, booked: false, selected: false },
-    { number: 3, booked: true, selected: false },
-    { number: 4, booked: false, selected: false },
-    { number: 5, booked: false, selected: false },
-    { number: 6, booked: true, selected: false }
-  ];
 
-  selectedSeatNumber: number | null = null;
+  constructor(
+    private router: Router,
+    private toastService: Toast,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     const today = new Date();
-    this.todayDate = today.toISOString().split('T')[0]; // format: YYYY-MM-DD
-    // NEW
-    this.user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.todayDate = today.toISOString().split('T')[0];
+
     this.bookingHistory = JSON.parse(localStorage.getItem('bookings') || '[]');
+
+    this.setGreeting();
+    this.updateTime();
+    this.getWeather();
+
+    setInterval(() => {
+      this.updateTime();
+    }, 1000);
   }
-
-  constructor(private router: Router) { }
-
   get availableSeats() {
     return this.totalSeats - this.bookedSeats;
   }
 
   logout() {
     this.router.navigate(['/login']);
-  }
-
-  selectSeat(seat: any) {
-    this.seats.forEach(s => s.selected = false);
-    seat.selected = true;
-    this.selectedSeatNumber = seat.number;
   }
 
   openBookingPopup() {
@@ -82,22 +90,22 @@ export class DashboardComponent {
   confirmBooking() {
 
     if (!this.fromLocation || !this.toLocation) {
-      alert("Please enter From and To locations 📍");
+      this.toastService.show("Please enter From and To locations 📍", "warning");
       return;
     }
 
     if (!this.selectedDate) {
-      alert("Please select travel date 📅");
+      this.toastService.show("Please select travel date 📅", "warning");
       return;
     }
 
     if (!this.selectedTime) {
-      alert("Please select time 🌅🌇");
+      this.toastService.show("Please select time 🌅🌇", "warning");
       return;
     }
 
     if (!this.paymentDone) {
-      alert("Booking will be confirmed only after payment is completed 💳");
+      this.toastService.show("Complete payment to confirm booking 💳", "warning");
       return;
     }
 
@@ -105,7 +113,7 @@ export class DashboardComponent {
       this.bookedSeats++;
 
       this.bookingHistory.push({
-        name: this.user?.name || 'Guest',
+        name: this.userName || 'Guest',
         mobile: this.mobileNumber || 'N/A',
         from: this.fromLocation,
         to: this.toLocation,
@@ -119,10 +127,11 @@ export class DashboardComponent {
 
       this.showPopup = false;
       this.showSuccess = true;
+      this.toastService.show("Booking successful 🚗", "success");
     } else {
-      alert("No seats available ❌");
+      this.toastService.show("No seats available ❌", "error");
     }
-
+    this.loadCharts(); // Refresh charts with new booking data
   }
   setTab(tab: string) {
     this.activeTab = tab;
@@ -130,48 +139,20 @@ export class DashboardComponent {
   closeSuccess() {
     this.showSuccess = false;
   }
-  isSeatBooked(seatNumber: number) {
-    return this.seats.find(s => s.number === seatNumber)?.booked;
-  }
-
-  cancelSeat() {
-    if (!this.selectedSeatNumber) return;
-
-    const seat = this.seats.find(s => s.number === this.selectedSeatNumber);
-
-    if (seat && seat.booked) {
-      seat.booked = false;
-      this.bookedSeats--;
-
-      alert(`Seat ${this.selectedSeatNumber} cancelled successfully!`);
-    } else {
-      alert('Please select a booked seat to cancel');
-    }
-
-    this.selectedSeatNumber = null;
-  }
-  cancelBooking() {
-    if (this.bookedSeats > 0) {
-      this.bookedSeats--;
-      alert('Your booking has been cancelled successfully!');
-    } else {
-      alert('No booking found to cancel');
-    }
-  }
   goToStep2() {
 
     if (!this.fromLocation || !this.toLocation) {
-      alert("Enter pickup & destination 📍");
+      this.toastService.show("Enter pickup & destination 📍", "warning");
       return;
     }
 
     if (!this.selectedDate) {
-      alert("Select date 📅");
+      this.toastService.show("Select date 📅", "warning");
       return;
     }
 
     if (!this.selectedTime) {
-      alert("Select time ⏰");
+      this.toastService.show("Select time ⏰", "warning");
       return;
     }
 
@@ -197,7 +178,7 @@ export class DashboardComponent {
 
     localStorage.setItem('bookings', JSON.stringify(this.bookingHistory));
 
-    alert('Booking cancelled successfully ❌');
+    this.toastService.show('Booking cancelled successfully ❌', 'error');
   }
   downloadInvoice(booking: any) {
     const doc = new jsPDF();
@@ -227,37 +208,92 @@ export class DashboardComponent {
   ngAfterViewInit() {
     this.loadCharts();
   }
-  loadCharts() {
-    const bookingsCount = this.bookingHistory.length;
+ loadCharts() {
 
-    const paid = this.bookingHistory.filter(b => b.payment === 'Paid').length;
-    const pending = this.bookingHistory.filter(b => b.payment === 'Pending').length;
+  const paid = this.bookingHistory.filter(b => b.payment === 'Paid').length;
+  const pending = this.bookingHistory.filter(b => b.payment === 'Pending').length;
 
-    const totalRevenue = this.bookingHistory
-      .filter(b => b.payment === 'Paid')
-      .reduce((sum, b) => sum + b.price, 0);
+  const totalRevenue = this.bookingHistory
+    .filter(b => b.payment === 'Paid')
+    .reduce((sum, b) => sum + b.price, 0);
 
-    // Pie Chart (Payment Status)
-    new Chart("paymentChart", {
-      type: 'pie',
-      data: {
-        labels: ['Paid', 'Pending'],
-        datasets: [{
-          data: [paid, pending]
-        }]
-      }
-    });
+  // ✅ Destroy old charts before creating new ones
+  if (this.paymentChart) {
+    this.paymentChart.destroy();
+  }
 
-    // Bar Chart (Revenue)
-    new Chart("revenueChart", {
-      type: 'bar',
-      data: {
-        labels: ['Revenue'],
-        datasets: [{
-          label: 'Total ₹',
-          data: [totalRevenue]
-        }]
+  if (this.revenueChart) {
+    this.revenueChart.destroy();
+  }
+
+  // ✅ Create Pie Chart
+  this.paymentChart = new Chart("paymentChart", {
+    type: 'pie',
+    data: {
+      labels: ['Paid', 'Pending'],
+      datasets: [{
+        data: [paid, pending]
+      }]
+    }
+  });
+
+  // ✅ Create Bar Chart
+  this.revenueChart = new Chart("revenueChart", {
+    type: 'bar',
+    data: {
+      labels: ['Revenue'],
+      datasets: [{
+        label: 'Total ₹',
+        data: [totalRevenue]
+      }]
+    }
+  });
+}
+  // Greeting logic
+  setGreeting() {
+    const hour = new Date().getHours();
+
+    if (hour < 12) {
+      this.greeting = 'Good Morning ☀️';
+    } else if (hour < 18) {
+      this.greeting = 'Good Afternoon 🌤';
+    } else {
+      this.greeting = 'Good Evening 🌙';
+    }
+  }
+
+  // Live Time
+  updateTime() {
+    const now = new Date();
+    this.currentTime = now.toLocaleTimeString();
+  }
+
+  getWeather() {
+    const apiKey = '45d3d26882f71e1943e9434ef209e623'; // Replace with your OpenWeatherMap API key
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${apiKey}&units=metric`;
+
+    this.http.get<any>(url).subscribe({
+      next: (res) => {
+        this.temperature = Math.round(res.main.temp);
+        this.weatherIcon = res.weather[0].icon;
+        this.city = res.name;
+      },
+      error: (err) => {
+        console.error('Weather API error:', err);
       }
     });
   }
+  handleBooking(booking: any) {
+
+  this.bookedSeats++;
+
+  this.bookingHistory.push(booking);
+
+  localStorage.setItem('bookings', JSON.stringify(this.bookingHistory));
+
+  this.loadCharts();
+
+  this.toastService.show("Booking successful 🚗", "success");
+}
 }

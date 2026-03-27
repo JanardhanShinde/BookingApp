@@ -1,0 +1,60 @@
+<div *ngIf="activeTab === 'profile'" class="profile-section">
+
+  <h2>👤 My Profile</h2>
+
+  <div class="profile-container">
+
+    <!-- LEFT: Profile Card -->
+    <div class="profile-card">
+      <div class="avatar">
+        {{ user?.name?.charAt(0) || 'U' }}
+      </div>
+
+      <h3>{{ user?.name }}</h3>
+      <p>{{ user?.email }}</p>
+
+      <button class="edit-btn" (click)="editMode = !editMode">
+        ✏️ Edit Profile
+      </button>
+    </div>
+
+    <!-- RIGHT: Details -->
+    <div class="profile-details">
+
+      <div *ngIf="!editMode">
+        <p><strong>📧 Email:</strong> {{ user?.email }}</p>
+        <p><strong>📱 Mobile:</strong> {{ user?.mobile || 'Not Added' }}</p>
+      </div>
+
+      <!-- EDIT MODE -->
+      <div *ngIf="editMode" class="edit-form">
+        <input [(ngModel)]="user.name" placeholder="Enter Name">
+        <input [(ngModel)]="user.email" placeholder="Enter Email">
+        <input [(ngModel)]="user.mobile" placeholder="Enter Mobile">
+
+        <button class="save-btn" (click)="saveProfile()">💾 Save</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- STATS -->
+  <div class="profile-stats">
+    <div class="stat-box">
+      <h3>{{ bookingHistory.length }}</h3>
+      <p>Bookings</p>
+    </div>
+
+    <div class="stat-box">
+      <h3>₹{{ getTotalSpent() }}</h3>
+      <p>Total Spent</p>
+    </div>
+
+    <div class="stat-box">
+      <h3>{{ bookedSeats }}</h3>
+      <p>Seats Booked</p>
+    </div>
+  </div>
+
+</div>

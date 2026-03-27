@@ -559,3 +559,145 @@
   flex: 1;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
 }
+/* Toast Container */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+/* Toast Box */
+.toast-content {
+  padding: 14px 20px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 500;
+  min-width: 250px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  animation: slideIn 0.3s ease;
+}
+
+/* Types */
+.toast-content.success {
+  background: #28a745;
+}
+
+.toast-content.error {
+  background: #dc3545;
+}
+
+.toast-content.warning {
+  background: #ffc107;
+  color: #000;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.modern-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Welcome Text */
+.welcome-text h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.welcome-text p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.username {
+  color: #ffd700;
+}
+
+/* Car Animation Section */
+.car-animation {
+  position: relative;
+  width: 200px;
+  height: 60px;
+  overflow: hidden;
+}
+
+/* Road */
+.road {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    white,
+    white 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  animation: roadMove 1s linear infinite;
+}
+
+/* Car */
+.car1{
+  position: absolute;
+  bottom: 20px;
+  font-size: 30px;
+  animation: drive 3s linear infinite;
+}
+
+/* Animations */
+@keyframes drive {
+  0% {
+    left: -40px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes roadMove {
+  0% {
+    background-position: 0;
+  }
+  100% {
+    background-position: 40px;
+  }
+}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.sub-text {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 5px;
+}
+
+/* Weather Box */
+.weather-box {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  backdrop-filter: blur(5px);
+}
