@@ -32,6 +32,10 @@ export class LoginComponent {
     // Fake login success (later connect API)
     console.log('Login Success');
 
+    // Save username to localStorage (extract from email before @ symbol)
+    const username = this.email.split('@')[0];
+    localStorage.setItem('userName', username);
+
     this.router.navigate(['/dashboard']);
   }
   goToSignup() {

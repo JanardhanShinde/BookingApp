@@ -44,7 +44,7 @@ revenueChart: any;
 
   greeting = '';
   currentTime = '';
-  userName = localStorage.getItem('userName');
+  userName = '';
 
   temperature: any = '';
   weatherIcon: string = '';
@@ -63,6 +63,9 @@ revenueChart: any;
   ngOnInit() {
     const today = new Date();
     this.todayDate = today.toISOString().split('T')[0];
+
+    // Retrieve username from localStorage
+    this.userName = localStorage.getItem('userName') || '';
 
     this.bookingHistory = JSON.parse(localStorage.getItem('bookings') || '[]');
 
@@ -135,6 +138,13 @@ revenueChart: any;
   }
   setTab(tab: string) {
     this.activeTab = tab;
+    
+    // Reload charts when switching back to dashboard tab
+    if (tab === 'dashboard') {
+      setTimeout(() => {
+        this.loadCharts();
+      }, 100);
+    }
   }
   closeSuccess() {
     this.showSuccess = false;
